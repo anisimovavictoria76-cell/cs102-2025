@@ -1,25 +1,29 @@
+"""Этот код делает affline_cipher.py"""
+
+
 def encrypt_affine(plaintext, a, b):
+    """Функция делает шифровку"""
     result = []
 
     for char in plaintext:
         if char.isupper():
-            x = ord(char) - ord('A')
+            x = ord(char) - ord("A")
             encrypted = (a * x + b) % 26
-            result.append(chr(encrypted + ord('A')))
+            result.append(chr(encrypted + ord("A")))
         elif char.islower():
-            x = ord(char) - ord('a')
+            x = ord(char) - ord("a")
             encrypted = (a * x + b) % 26
-            result.append(chr(encrypted + ord('a')))
+            result.append(chr(encrypted + ord("a")))
         else:
             result.append(char)
 
-    return ''.join(result)
+    return "".join(result)
 
 
 if __name__ == "__main__":
-    plaintext = "HELLO"
-    a = 5
-    b = 8
-    encrypted = encrypt_affine(plaintext, a, b)
-    print(f"Plaintext: {plaintext}")
-    print(f"Encrypted: {encrypted}")
+    PLAINTEXT = "HELLO"
+    A = 5
+    B = 8
+    ENCRYPTED = encrypt_affine(PLAINTEXT, A, B)
+    print(f"Plaintext: {PLAINTEXT}")
+    print(f"Encrypted: {ENCRYPTED}")

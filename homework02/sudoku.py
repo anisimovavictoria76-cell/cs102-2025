@@ -147,7 +147,7 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
     """
     empty_pos = find_empty_positions(grid)
     if empty_pos is None:
-        return grid  
+        return grid
     row, col = empty_pos
     possible_values = find_possible_values(grid, (row, col))
 
@@ -163,7 +163,26 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
 
 def check_solution(solution: tp.List[tp.List[str]]) -> bool:
     """ Если решение solution верно, то вернуть True, в противном случае False """
-    # TODO: Add doctests with bad puzzles
+          # TODO: Add doctests with bad puzzles
+    for i in range(9):
+        row = get_row(solution, (i, 0))
+        if set(row) != set("123456789"):
+            return False
+
+        # Проверяем все столбцы
+    for j in range(9):
+        col = get_col(solution, (0, j))
+        if set(col) != set("123456789"):
+            return False
+
+        # Проверяем все блоки 3x3
+    for i in range(0, 9, 3):
+        for j in range(0, 9, 3):
+            block = get_block(solution, (i, j))
+            if set(block) != set("123456789"):
+                return False
+
+    return True
     pass
 
 
@@ -188,6 +207,7 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
     >>> check_solution(solution)
     True
     """
+    
     pass
 
 

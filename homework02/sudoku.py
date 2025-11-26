@@ -169,13 +169,11 @@ def check_solution(solution: tp.List[tp.List[str]]) -> bool:
         if set(row) != set("123456789"):
             return False
 
-        # Проверяем все столбцы
     for j in range(9):
         col = get_col(solution, (0, j))
         if set(col) != set("123456789"):
             return False
 
-        # Проверяем все блоки 3x3
     for i in range(0, 9, 3):
         for j in range(0, 9, 3):
             block = get_block(solution, (i, j))
@@ -207,7 +205,7 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
     >>> check_solution(solution)
     True
     """
-    
+
     pass
 
 

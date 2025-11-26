@@ -205,7 +205,28 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
     >>> check_solution(solution)
     True
     """
+    grid = [['.' for _ in range(9)] for _ in range(9)]
 
+    solved = solve(grid)
+
+    if solved is None:
+        return grid
+
+    N = max(0, min(N, 81))
+
+    dots_needed = 81 - N
+
+    positions = [(i, j) for i in range(9) for j in range(9)]
+
+    import random
+    random.shuffle(positions)
+
+    result = [row[:] for row in solved]
+
+    for i, j in positions[:dots_needed]:
+        result[i][j] = '.'
+
+    return result
     pass
 
 

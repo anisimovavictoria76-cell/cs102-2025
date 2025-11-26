@@ -6,7 +6,7 @@ T = tp.TypeVar("T")
 
 def read_sudoku(path: tp.Union[str, pathlib.Path]) -> tp.List[tp.List[str]]:
     """Прочитать Судоку из указанного файла"""
-    with path.open(encoding='utf-8') as f:
+    with path.open(encoding="utf-8") as f:
         puzzle = f.read()
     return create_grid(puzzle)
 
@@ -23,10 +23,7 @@ def display(grid: tp.List[tp.List[str]]) -> None:
     width = 2
     line = "+".join(["-" * (width * 3)] * 3)
     for row in range(9):
-        line_content = "".join(
-            grid[row][col].center(width) + ("|" if str(col) in "25" else "")
-            for col in range(9)
-        )
+        line_content = "".join(grid[row][col].center(width) + ("|" if str(col) in "25" else "") for col in range(9))
         print(line_content)
         if str(row) in "25":
             print(line)
@@ -101,9 +98,10 @@ def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[in
     """
     for i, row in enumerate(grid):
         for j, cell in enumerate(row):
-            if cell == '.':
+            if cell == ".":
                 return (i, j)
     return None
+
 
 def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.Set[str]:
     """Вернуть множество возможных значения для указанной позиции
@@ -154,6 +152,7 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
         grid[row][col] = "."
 
     return None
+
 
 def check_solution(solution: tp.List[tp.List[str]]) -> bool:
     """Если решение solution верно, то вернуть True, в противном случае False"""

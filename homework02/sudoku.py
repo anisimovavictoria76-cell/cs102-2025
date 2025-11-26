@@ -1,11 +1,13 @@
 import pathlib
 import typing as tp
+import random
 
 T = tp.TypeVar("T")
 
 
 def read_sudoku(path: tp.Union[str, pathlib.Path]) -> tp.List[tp.List[str]]:
     """Прочитать Судоку из указанного файла"""
+    path = pathlib.Path(path)
     with path.open(encoding="utf-8") as f:
         puzzle = f.read()
     return create_grid(puzzle)
@@ -177,13 +179,32 @@ def check_solution(solution: tp.List[tp.List[str]]) -> bool:
 
 
 def generate_sudoku(num_filled: int) -> tp.List[tp.List[str]]:
+    solved = solve([['.' for _ in range(9)] for _ in range(9)])
+    if solved is None:
+        return [['.' for _ in range(9)] for _ in range(9)]
 
-    if __name__ == "__main__":
-        for fname in ["puzzle1.txt", "puzzle2.txt", "puzzle3.txt"]:
-            sudoku_grid = read_sudoku(fname)
+    num_filled = max(0, min(num_filled, 81))
+    dots_needed = 81 - num_filled
+
+    positions = [(i, j) for i in range(9) for j in range(9)]
+    random.shuffle(positions)
+
+    result = [row[:] for row in solved]
+    for i, j in positions[:dots_needed]:
+        result[i][j] = '.'
+
+    return result
+
+if __name__ == "__main__":
+    for fname in ["puzzle1.txt", "puzzle2.txt", "puzzle3.txt"]:
+        sudoku_grid = read_sudoku(fname)
         display(sudoku_grid)
         solution_grid = solve(sudoku_grid)
         if not solution_grid:
             print(f"Puzzle {fname} can't be solved")
         else:
             display(solution_grid)
+            if check_solution(solution_grid):
+                print("Solution is correct")
+            else:
+                print("Ooops")

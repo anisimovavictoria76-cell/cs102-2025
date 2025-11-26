@@ -179,9 +179,9 @@ def check_solution(solution: tp.List[tp.List[str]]) -> bool:
 
 
 def generate_sudoku(num_filled: int) -> tp.List[tp.List[str]]:
-    solved = solve([['.' for _ in range(9)] for _ in range(9)])
+    solved = solve([["." for _ in range(9)] for _ in range(9)])
     if solved is None:
-        return [['.' for _ in range(9)] for _ in range(9)]
+        return [["." for _ in range(9)] for _ in range(9)]
 
     num_filled = max(0, min(num_filled, 81))
     dots_needed = 81 - num_filled
@@ -191,9 +191,10 @@ def generate_sudoku(num_filled: int) -> tp.List[tp.List[str]]:
 
     result = [row[:] for row in solved]
     for i, j in positions[:dots_needed]:
-        result[i][j] = '.'
+        result[i][j] = "."
 
     return result
+
 
 if __name__ == "__main__":
     for fname in ["puzzle1.txt", "puzzle2.txt", "puzzle3.txt"]:

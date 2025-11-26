@@ -118,7 +118,18 @@ def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -
     >>> values == {'2', '5', '9'}
     True
     """
+    possible_values = set("123456789")
 
+    row_values = set(get_row(grid, pos))
+    possible_values -= row_values
+
+    col_values = set(get_col(grid, pos))
+    possible_values -= col_values
+
+    block_values = set(get_block(grid, pos))
+    possible_values -= block_values
+
+    return possible_values
     pass
 
 

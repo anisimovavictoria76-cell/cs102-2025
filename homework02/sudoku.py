@@ -115,16 +115,9 @@ def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -
     >>> values == {'2', '5', '9'}
     True
     """
-    possible_values = set("123456789")
-
-    row_values = set(get_row(grid, pos))
-    possible_values -= row_values
-
-    col_values = set(get_col(grid, pos))
-    possible_values -= col_values
-
-    block_values = set(get_block(grid, pos))
-    possible_values -= block_values
+    possible_values = set("123456789").difference(
+        set(get_row(grid, pos)), set(get_col(grid, pos)), set(get_block(grid, pos))
+    )
 
     return possible_values
 
@@ -141,6 +134,7 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
     >>> solve(grid)
     [['5', '3', '4', '6', '7', '8', '9', '1', '2'], ['6', '7', '2', '1', '9', '5', '3', '4', '8'], ['1', '9', '8', '3', '4', '2', '5', '6', '7'], ['8', '5', '9', '7', '6', '1', '4', '2', '3'], ['4', '2', '6', '8', '5', '3', '7', '9', '1'], ['7', '1', '3', '9', '2', '4', '8', '5', '6'], ['9', '6', '1', '5', '3', '7', '2', '8', '4'], ['2', '8', '7', '4', '1', '9', '6', '3', '5'], ['3', '4', '5', '2', '8', '6', '1', '7', '9']]
     """
+    grid = [row[:] for row in grid]
     empty_pos = find_empty_positions(grid)
     if empty_pos is None:
         return grid
@@ -159,6 +153,7 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
 def check_solution(solution: tp.List[tp.List[str]]) -> bool:
     """Если решение solution верно, то вернуть True, в противном случае False"""
     # TODO: Add doctests with bad puzzles
+    VALID_SET = set("123456789")
     for i in range(9):
         row = get_row(solution, (i, 0))
         if set(row) != set("123456789"):
@@ -179,6 +174,27 @@ def check_solution(solution: tp.List[tp.List[str]]) -> bool:
 
 
 def generate_sudoku(num_filled: int) -> tp.List[tp.List[str]]:
+    """
+    Генерирует случайное судоку с заданным количеством заполненных клеток.
+
+    Алгоритм:
+    1. Генерирует случайное полное решение судоку
+    2. Случайно удаляет цифры, оставляя только num_filled заполненных клеток
+
+    Args:
+        num_filled: Количество заполненных клеток (от 0 до 81)
+                   Если значение выходит за границы, оно обрезается до [0, 81]
+
+    Returns:
+        Двумерный список 9x9 со строками-цифрами в заполненных клетках
+        и точками '.' в пустых клетках
+
+    Note:
+        - Генерируется корректное решение судоку
+        - Удаление клеток происходит случайным образом
+        - Гарантируется, что останется ровно num_filled заполненных клеток
+    """
+
     solved = solve([["." for _ in range(9)] for _ in range(9)])
     if solved is None:
         return [["." for _ in range(9)] for _ in range(9)]

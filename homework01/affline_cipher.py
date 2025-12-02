@@ -1,9 +1,9 @@
 """Аффинный шифр (affine_cipher.py)"""
 
-ALPHABET_SIZE = 26
 
 def encrypt_affine(plaintext, a, b):
     """Функция делает шифровку"""
+    ALPHABET_SIZE = 26
     result = []
 
     for char in plaintext:

@@ -8,6 +8,7 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
     >>> encrypt_vigenere("ATTACKATDAWN", "LEMON")
     'LXFOPVEFRNHR'
     """
+    ALPHABET_SIZE = 26
     ciphertext = ""
     keyword_upper = keyword.upper()
     key_length = len(keyword_upper)
@@ -19,12 +20,11 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
 
             if char.isupper():
                 base = ord("A")
-                encrypted_char = chr((ord(char) - base + shift) % 26 + base)
-                ciphertext += encrypted_char
             else:
                 base = ord("a")
-                encrypted_char = chr((ord(char) - base + shift) % 26 + base)
-                ciphertext += encrypted_char
+
+            encrypted_char = chr((ord(char) - base + shift) % ALPHABET_SIZE + base)
+            ciphertext += encrypted_char
         else:
             ciphertext += char
 
@@ -41,6 +41,7 @@ def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
     >>> decrypt_vigenere("LXFOPVEFRNHR", "LEMON")
     'ATTACKATDAWN'
     """
+    ALPHABET_SIZE = 26
     plaintext = ""
     keyword_upper = keyword.upper()
     key_length = len(keyword_upper)
@@ -52,11 +53,11 @@ def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
 
             if char.isupper():
                 base = ord("A")
-                decrypted_char = chr((ord(char) - base - shift) % 26 + base)
+                decrypted_char = chr((ord(char) - base - shift) % ALPHABET_SIZE + base)
                 plaintext += decrypted_char
             else:
                 base = ord("a")
-                decrypted_char = chr((ord(char) - base - shift) % 26 + base)
+                decrypted_char = chr((ord(char) - base - shift) % ALPHABET_SIZE + base)
                 plaintext += decrypted_char
         else:
             plaintext += char

@@ -1,5 +1,6 @@
-"""Этот код делает affline_cipher.py"""
+"""Аффинный шифр (affine_cipher.py)"""
 
+ALPHABET_SIZE = 26
 
 def encrypt_affine(plaintext, a, b):
     """Функция делает шифровку"""
@@ -8,11 +9,11 @@ def encrypt_affine(plaintext, a, b):
     for char in plaintext:
         if char.isupper():
             x = ord(char) - ord("A")
-            encrypted = (a * x + b) % 26
+            encrypted = (a * x + b) % ALPHABET_SIZE
             result.append(chr(encrypted + ord("A")))
         elif char.islower():
             x = ord(char) - ord("a")
-            encrypted = (a * x + b) % 26
+            encrypted = (a * x + b) % ALPHABET_SIZE
             result.append(chr(encrypted + ord("a")))
         else:
             result.append(char)

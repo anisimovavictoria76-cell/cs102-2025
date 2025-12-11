@@ -1,3 +1,7 @@
+"""
+RSA encryption and decryption implementation.
+Includes key generation, encryption, and decryption functions.
+"""
 import random
 import typing as tp
 
@@ -13,9 +17,9 @@ def is_prime(n: int) -> bool:
     False
     """
     if n < 2 or n % 2 == 0:
-        return n == 2  
+        return n == 2
 
-    for i in range(3, int(n ** 0.5) + 1, 2):
+    for i in range(3, int(n**0.5) + 1, 2):
         if n % i == 0:
             return False
     return True
@@ -41,23 +45,28 @@ def multiplicative_inverse(e: int, phi: int) -> int:
     >>> multiplicative_inverse(7, 40)
     23
     """
+    if phi == 0:
+        raise ValueError("phi cannot be zero")
 
-    def extended_gcd(a: int, b: int) -> tuple:
-        if a == 0:
-            return b, 0, 1
+    a, b = e, phi
+    x0, x1 = 1, 0
 
-        gcd_val, x1, y1 = extended_gcd(b % a, a)
-        x = y1 - (b // a) * x1
-        y = x1
+    while b != 0:
+        q = a // b
 
-        return gcd_val, x, y
+        old_a = a
+        old_b = b
+        old_x0 = x0
 
-    gcd_val, x, _ = extended_gcd(e, phi)
+        a = old_b
+        b = old_a - q * old_b
+        x0 = x1
+        x1 = old_x0 - q * x1
 
-    if gcd_val != 1:
-        raise ValueError(f"Обратный элемент не существует. Числа {e} и {phi} не взаимно просты")
+    if a != 1:
+        raise ValueError(f"Inverse doesn't exist for {e} mod {phi}")
 
-    return x % phi
+    return x0 % phi if x0 >= 0 else (x0 % phi) + phi
 
 
 def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[int, int]]:
@@ -66,26 +75,19 @@ def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[in
     elif p == q:
         raise ValueError("p and q cannot be equal")
 
-    # n = pq
     n = p * q
 
-    # phi = (p-1)(q-1)
     phi = (p - 1) * (q - 1)
 
-    # Choose an integer e such that e and phi(n) are coprime
     e = random.randrange(1, phi)
 
-    # Use Euclid's Algorithm to verify that e and phi(n) are coprime
     g = gcd(e, phi)
     while g != 1:
         e = random.randrange(1, phi)
         g = gcd(e, phi)
 
-    # Use Extended Euclid's Algorithm to generate the private key
     d = multiplicative_inverse(e, phi)
 
-    # Return public and private keypair
-    # Public key is (e, n) and private key is (d, n)
     return ((e, n), (d, n))
 
 

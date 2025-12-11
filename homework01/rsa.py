@@ -49,25 +49,21 @@ def multiplicative_inverse(e: int, phi: int) -> int:
     if phi == 0:
         raise ValueError("phi cannot be zero")
 
-    a, b = e, phi
-    x0, x1 = 1, 0
+    old_r, r = e, phi
+    old_s, s = 1, 0
+    old_t, t = 0, 1
 
-    while b != 0:
-        q = a // b
+    while r != 0:
+        quotient = old_r // r
+        old_r, r = r, old_r - quotient * r
+        old_s, s = s, old_s - quotient * s
+        old_t, t = t, old_t - quotient * t
 
-        old_a = a
-        old_b = b
-        old_x0 = x0
+    if old_r != 1:
+        raise ValueError(f"No modular inverse for {e} mod {phi}")
 
-        a = old_b
-        b = old_a - q * old_b
-        x0 = x1
-        x1 = old_x0 - q * x1
-
-    if a != 1:
-        raise ValueError(f"Inverse doesn't exist for {e} mod {phi}")
-
-    return x0 % phi if x0 >= 0 else (x0 % phi) + phi
+    result = old_s % phi
+    return result
 
 
 def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[int, int]]:

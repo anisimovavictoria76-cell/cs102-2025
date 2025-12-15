@@ -1,11 +1,11 @@
-"""Graphical User Interface for Conway's Game of Life."""
-
-from typing import Optional
-
+# isort: skip_file
 import pygame
+from typing import Optional
 
 from life import GameOfLife
 from ui import UI
+
+"""Graphical User Interface for Conway's Game of Life."""
 
 
 class GUI(UI):

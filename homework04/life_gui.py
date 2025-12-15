@@ -1,5 +1,4 @@
 """Graphical User Interface for Conway's Game of Life."""
-
 from typing import Optional
 
 import pygame
@@ -43,7 +42,6 @@ class GUI(UI):
     def _handle_events(self, paused: bool, running: bool) -> tuple[bool, bool]:
         """Handle pygame events."""
         for event in pygame.event.get():
-            # Используем числовые значения вместо pygame.QUIT и т.д.
             if event.type == 256:  # pygame.QUIT
                 return paused, False
             if event.type == 768:  # pygame.KEYDOWN
@@ -55,7 +53,6 @@ class GUI(UI):
     def _handle_keyboard(self, event: pygame.event.Event, paused: bool, running: bool) -> tuple[bool, bool]:
         """Handle keyboard events."""
         key = event.key
-        # Используем числовые значения клавиш
         if key == 32:  # pygame.K_SPACE
             paused = not paused
             print(f"Игра {'на паузе' if paused else 'продолжается'}")

@@ -4,11 +4,12 @@ Graphical User Interface for Conway's Game of Life.
 
 from typing import Optional
 
-# pylint: disable=no-member, too-many-statements
 import pygame
 
 from life import GameOfLife
 from ui import UI
+
+# pylint: disable=no-member, too-many-statements
 
 
 class GUI(UI):

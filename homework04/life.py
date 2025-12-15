@@ -19,22 +19,30 @@ class GameOfLife:
         cell_size: int = 10,
         speed: int = 10,
         max_generations: Optional[int] = None,
+        size: Optional[Tuple[int, int]] = None,
     ) -> None:
         """
         Initialize the Game of Life.
 
         Args:
-            width: Screen width in pixels
-            height: Screen height in pixels
+            width: Screen width in pixels (if size not provided)
+            height: Screen height in pixels (if size not provided)
             cell_size: Size of each cell in pixels
             speed: Game speed in frames per second
             max_generations: Maximum number of generations (None for unlimited)
+            size: Tuple (width, height) as alternative to width/height parameters
         """
-        self.width = width
-        self.height = height
+        if size is not None:
+            # Если передан кортеж (ширина, высота)
+            self.width, self.height = size
+        else:
+            # Если переданы отдельные width и height
+            self.width = width
+            self.height = height
+
         self.cell_size = cell_size
 
-        self.screen_size = width, height
+        self.screen_size = self.width, self.height
         self.screen = pygame.display.set_mode(self.screen_size)
 
         self.cell_width = self.width // self.cell_size
@@ -189,7 +197,7 @@ class GameOfLife:
             if len(line) != cols:
                 raise ValueError("Все строки должны быть одинаковой длины")
 
-        life_game = GameOfLife(width=cols * 10, height=rows * 10, cell_size=10)
+        life_game = GameOfLife(size=(cols * 10, rows * 10), cell_size=10)
 
         life_game.grid = [[0 for _ in range(life_game.cell_width)] for _ in range(life_game.cell_height)]
         life_game.curr_generation = [[0 for _ in range(life_game.cell_width)] for _ in range(life_game.cell_height)]
@@ -212,5 +220,5 @@ class GameOfLife:
 
 
 if __name__ == "__main__":
-    game = GameOfLife(320, 240, 20, 10)
+    game = GameOfLife(size=(320, 240), cell_size=20, speed=10)
     game.run()

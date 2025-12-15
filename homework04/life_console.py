@@ -77,13 +77,13 @@ class Console(UI):
                 x = start_x + c
                 if 0 <= y < height and 0 <= x < width:
                     if self.life.curr_generation[r][c]:
-                        screen.addch(y, x, '#')
+                        screen.addch(y, x, "#")
                     else:
-                        screen.addch(y, x, ' ')
+                        screen.addch(y, x, " ")
 
         if height > 1 and width > 30:
             info = f" Generation: {self.life.generations} | Press Q to quit "
-            screen.addstr(height - 2, 1, info[:width - 2])
+            screen.addstr(height - 2, 1, info[: width - 2])
 
     def run(self):
         screen = curses.initscr()
@@ -101,7 +101,7 @@ class Console(UI):
                 screen.refresh()
 
                 key = screen.getch()
-                if key in (ord('q'), ord('Q')):
+                if key in (ord("q"), ord("Q")):
                     break
 
                 if self.life.is_max_generations_exceeded:

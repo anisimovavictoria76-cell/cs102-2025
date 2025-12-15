@@ -16,13 +16,7 @@ Grid = tp.List[Cells]
 class GameOfLife:
     """Prototype implementation of Conway's Game of Life."""
 
-    def __init__(
-            self,
-            width: int = 640,
-            height: int = 480,
-            cell_size: int = 10,
-            speed: int = 10
-    ) -> None:
+    def __init__(self, width: int = 640, height: int = 480, cell_size: int = 10, speed: int = 10) -> None:
         """
         Initialize the Game of Life prototype.
 
@@ -48,13 +42,9 @@ class GameOfLife:
     def draw_lines(self) -> None:
         """Draw grid lines on the screen."""
         for x in range(0, self.width, self.cell_size):
-            pygame.draw.line(
-                self.screen, pygame.Color("black"), (x, 0), (x, self.height)
-            )
+            pygame.draw.line(self.screen, pygame.Color("black"), (x, 0), (x, self.height))
         for y in range(0, self.height, self.cell_size):
-            pygame.draw.line(
-                self.screen, pygame.Color("black"), (0, y), (self.width, y)
-            )
+            pygame.draw.line(self.screen, pygame.Color("black"), (0, y), (self.width, y))
 
     def draw_grid(self) -> None:
         """Draw cells with appropriate colors."""
@@ -110,14 +100,8 @@ class GameOfLife:
             Matrix of cells size `cell_height` x `cell_width`.
         """
         if randomize:
-            return [
-                [random.randint(0, 1) for _ in range(self.cell_width)]
-                for _ in range(self.cell_height)
-            ]
-        return [
-            [0 for _ in range(self.cell_width)]
-            for _ in range(self.cell_height)
-        ]
+            return [[random.randint(0, 1) for _ in range(self.cell_width)] for _ in range(self.cell_height)]
+        return [[0 for _ in range(self.cell_width)] for _ in range(self.cell_height)]
 
     def get_neighbours(self, cell: Cell) -> Cells:
         """
@@ -142,8 +126,7 @@ class GameOfLife:
                 if i == 0 and j == 0:
                     continue
                 new_row, new_col = row + i, col + j
-                if (0 <= new_row < self.cell_height and
-                        0 <= new_col < self.cell_width):
+                if 0 <= new_row < self.cell_height and 0 <= new_col < self.cell_width:
                     neighbours.append(self.grid[new_row][new_col])
         return neighbours
 

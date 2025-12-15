@@ -15,8 +15,8 @@ class GUI(UI):
         super().__init__(life)
         self.cell_size = cell_size
         self.speed = speed
-        self.width = life.cell_width * cell_size
-        self.height = life.cell_height * cell_size
+        self.width = life.cols * cell_size
+        self.height = life.rows * cell_size
         self.screen: Optional[pygame.Surface] = None
 
     def draw_lines(self) -> None:
@@ -32,8 +32,8 @@ class GUI(UI):
         """Draw cells on the screen."""
         if self.screen is None:
             return
-        for y in range(self.life.cell_height):
-            for x in range(self.life.cell_width):
+        for y in range(self.life.rows):
+            for x in range(self.life.cols):
                 rect = pygame.Rect(x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size)
                 if self.life.curr_generation[y][x] == 1:
                     pygame.draw.rect(self.screen, pygame.Color("green"), rect)
@@ -74,7 +74,7 @@ class GUI(UI):
         x, y = event.pos
         cell_x = x // self.cell_size
         cell_y = y // self.cell_size
-        if 0 <= cell_x < self.life.cell_width and 0 <= cell_y < self.life.cell_height:
+        if 0 <= cell_x < self.life.cols and 0 <= cell_y < self.life.rows:
             if self.life.curr_generation[cell_y][cell_x] == 1:
                 self.life.curr_generation[cell_y][cell_x] = 0
             else:
@@ -129,7 +129,7 @@ class GUI(UI):
 
 
 if __name__ == "__main__":
-    game = GameOfLife(size=(640, 480), cell_size=10, speed=10, max_generations=100)
+    game = GameOfLife(size=(64, 48), randomize=True, max_generations=100)
     gui = GUI(life=game, cell_size=10, speed=10)
     print("Запуск Game of Life...")
     gui.run()

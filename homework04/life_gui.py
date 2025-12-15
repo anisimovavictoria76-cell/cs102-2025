@@ -1,10 +1,26 @@
+"""
+Graphical User Interface for Conway's Game of Life.
+"""
+
+# pylint: disable=no-member, too-many-statements
+from typing import Optional
 import pygame
 from life import GameOfLife
 from ui import UI
 
 
 class GUI(UI):
+    """GUI implementation for Game of Life using PyGame."""
+
     def __init__(self, life: GameOfLife, cell_size: int = 10, speed: int = 10) -> None:
+        """
+        Initialize GUI.
+
+        Args:
+            life: GameOfLife instance
+            cell_size: Size of each cell in pixels
+            speed: Game speed in frames per second
+        """
         super().__init__(life)
         self.cell_size = cell_size
         self.speed = speed
@@ -12,18 +28,28 @@ class GUI(UI):
         self.width = life.cell_width * cell_size
         self.height = life.cell_height * cell_size
 
-        self.screen = None
+        self.screen: Optional[pygame.Surface] = None
 
     def draw_lines(self) -> None:
+        """Draw grid lines on the screen."""
+        if self.screen is None:
+            return
         for x in range(0, self.width, self.cell_size):
-            pygame.draw.line(self.screen, pygame.Color("black"), (x, 0), (x, self.height))
+            pygame.draw.line(
+                self.screen, pygame.Color("black"), (x, 0), (x, self.height)
+            )
         for y in range(0, self.height, self.cell_size):
-            pygame.draw.line(self.screen, pygame.Color("black"), (0, y), (self.width, y))
+            pygame.draw.line(
+                self.screen, pygame.Color("black"), (0, y), (self.width, y)
+            )
 
     def draw_grid(self) -> None:
+        """Draw cells on the screen."""
+        if self.screen is None:
+            return
         for y in range(self.life.cell_height):
             for x in range(self.life.cell_width):
-                rect = (
+                rect = pygame.Rect(
                     x * self.cell_size,
                     y * self.cell_size,
                     self.cell_size,
@@ -35,7 +61,100 @@ class GUI(UI):
                 else:
                     pygame.draw.rect(self.screen, pygame.Color("white"), rect)
 
+    def _handle_events(self, paused: bool, running: bool) -> tuple[bool, bool]:
+        """Handle pygame events."""
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return paused, False
+
+            if event.type == pygame.KEYDOWN:
+                return self._handle_keyboard(event, paused, running)
+
+            if event.type == pygame.MOUSEBUTTONDOWN and paused:
+                self._handle_mouse_click(event)
+
+        return paused, running
+
+    def _handle_keyboard(self, event: pygame.event.Event,
+                         paused: bool, running: bool) -> tuple[bool, bool]:
+        """Handle keyboard events."""
+        key = event.key
+
+        if key == pygame.K_SPACE:
+            paused = not paused
+            print(f"Игра {'на паузе' if paused else 'продолжается'}")
+
+        elif key == pygame.K_r:
+            self.life.curr_generation = self.life.create_grid(randomize=True)
+            self.life.generations = 1
+            print("Сетка перезапущена")
+
+        elif key == pygame.K_c:
+            self.life.curr_generation = self.life.create_grid(randomize=False)
+            self.life.generations = 1
+            print("Сетка очищена")
+
+        elif key == pygame.K_ESCAPE:
+            running = False
+
+        return paused, running
+
+    def _handle_mouse_click(self, event: pygame.event.Event) -> None:
+        """Handle mouse click events."""
+        x, y = event.pos
+        cell_x = x // self.cell_size
+        cell_y = y // self.cell_size
+
+        if (0 <= cell_x < self.life.cell_width and
+                0 <= cell_y < self.life.cell_height):
+            if self.life.curr_generation[cell_y][cell_x] == 1:
+                self.life.curr_generation[cell_y][cell_x] = 0
+            else:
+                self.life.curr_generation[cell_y][cell_x] = 1
+
+    def _update_game_state(self, paused: bool) -> bool:
+        """Update game state if not paused."""
+        if paused or self.screen is None:
+            return paused
+
+        self.life.step()
+
+        font = pygame.font.SysFont(None, 24)
+        gen_text = font.render(
+            f"Поколение: {self.life.generations}",
+            True,
+            pygame.Color("blue")
+        )
+        self.screen.blit(gen_text, (10, 10))
+
+        if not self.life.is_changing:
+            print("Состояние стабилизировалось")
+            paused = True
+
+        if self.life.is_max_generations_exceeded:
+            print(
+                f"Достигнуто максимальное число поколений: "
+                f"{self.life.max_generations}"
+            )
+            paused = True
+
+        return paused
+
+    def _draw_pause_message(self) -> None:
+        """Draw pause message on screen."""
+        if self.screen is None:
+            return
+
+        font = pygame.font.SysFont(None, 24)
+        text = font.render(
+            "ПАУЗА (ПРОБЕЛ: продолжить, R: рестарт, C: очистить, ESC: выход)",
+            True,
+            pygame.Color("red")
+        )
+        self.screen.blit(text, (10, 10))
+
     def run(self) -> None:
+        """Run the main game loop."""
         pygame.init()
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Game of Life")
@@ -45,65 +164,20 @@ class GUI(UI):
         running = True
 
         while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        paused = not paused
-                        print(f"Игра {'на паузе' if paused else 'продолжается'}")
-
-                    elif event.key == pygame.K_r:
-                        self.life.curr_generation = self.life.create_grid(randomize=True)
-                        self.life.generations = 1
-                        print("Сетка перезапущена")
-
-                    elif event.key == pygame.K_c:
-                        self.life.curr_generation = self.life.create_grid(randomize=False)
-                        self.life.generations = 1
-                        print("Сетка очищена")
-
-                    elif event.key == pygame.K_ESCAPE:
-                        running = False
-
-                elif event.type == pygame.MOUSEBUTTONDOWN and paused:
-                    x, y = event.pos
-                    cell_x = x // self.cell_size
-                    cell_y = y // self.cell_size
-
-                    if 0 <= cell_x < self.life.cell_width and 0 <= cell_y < self.life.cell_height:
-                        if self.life.curr_generation[cell_y][cell_x] == 1:
-                            self.life.curr_generation[cell_y][cell_x] = 0
-                        else:
-                            self.life.curr_generation[cell_y][cell_x] = 1
+            if self.screen is None:
+                break
 
             self.screen.fill(pygame.Color("white"))
+
+            paused, running = self._handle_events(paused, running)
 
             self.draw_grid()
             self.draw_lines()
 
-            if not paused:
-                self.life.step()
-
-                font = pygame.font.SysFont(None, 24)
-                gen_text = font.render(f"Поколение: {self.life.generations}",
-                                       True, pygame.Color("blue"))
-                self.screen.blit(gen_text, (10, 10))
-
-                if not self.life.is_changing:
-                    print("Состояние стабилизировалось")
-                    paused = True
-
-                if self.life.is_max_generations_exceeded:
-                    print(f"Достигнуто максимальное число поколений: {self.life.max_generations}")
-                    paused = True
+            paused = self._update_game_state(paused)
 
             if paused:
-                font = pygame.font.SysFont(None, 24)
-                text = font.render("ПАУЗА (ПРОБЕЛ: продолжить, R: рестарт, C: очистить, ESC: выход)",
-                                   True, pygame.Color("red"))
-                self.screen.blit(text, (10, 10))
+                self._draw_pause_message()
 
             pygame.display.flip()
             clock.tick(self.speed)
@@ -113,8 +187,6 @@ class GUI(UI):
 
 
 if __name__ == "__main__":
-    from life import GameOfLife
-
     game = GameOfLife(
         width=640,
         height=480,
@@ -123,11 +195,7 @@ if __name__ == "__main__":
         max_generations=100
     )
 
-    gui = GUI(
-        life=game,
-        cell_size=10,
-        speed=10
-    )
+    gui = GUI(life=game, cell_size=10, speed=10)
 
     print("Запуск Game of Life...")
     gui.run()

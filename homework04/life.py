@@ -5,6 +5,7 @@ Conway's Game of Life implementation with PyGame GUI.
 import pathlib
 import random
 from typing import List, Optional, Tuple
+
 import pygame
 
 
@@ -12,12 +13,12 @@ class GameOfLife:
     """Main class implementing Conway's Game of Life logic."""
 
     def __init__(
-            self,
-            width: int = 640,
-            height: int = 480,
-            cell_size: int = 10,
-            speed: int = 10,
-            max_generations: Optional[int] = None
+        self,
+        width: int = 640,
+        height: int = 480,
+        cell_size: int = 10,
+        speed: int = 10,
+        max_generations: Optional[int] = None,
     ) -> None:
         """
         Initialize the Game of Life.
@@ -50,13 +51,9 @@ class GameOfLife:
     def draw_lines(self) -> None:
         """Draw grid lines on the screen."""
         for x in range(0, self.width, self.cell_size):
-            pygame.draw.line(
-                self.screen, pygame.Color("black"), (x, 0), (x, self.height)
-            )
+            pygame.draw.line(self.screen, pygame.Color("black"), (x, 0), (x, self.height))
         for y in range(0, self.height, self.cell_size):
-            pygame.draw.line(
-                self.screen, pygame.Color("black"), (0, y), (self.width, y)
-            )
+            pygame.draw.line(self.screen, pygame.Color("black"), (0, y), (self.width, y))
 
     def draw_grid(self) -> None:
         """Draw cells on the screen."""
@@ -67,12 +64,7 @@ class GameOfLife:
                 else:
                     color = pygame.Color("white")
 
-                rect = pygame.Rect(
-                    x * self.cell_size,
-                    y * self.cell_size,
-                    self.cell_size,
-                    self.cell_size
-                )
+                rect = pygame.Rect(x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size)
                 pygame.draw.rect(self.screen, color, rect)
 
     def run(self) -> None:
@@ -109,14 +101,10 @@ class GameOfLife:
         """
         if randomize:
             grid: List[List[int]] = [
-                [random.randint(0, 1) for _ in range(self.cell_width)]
-                for _ in range(self.cell_height)
+                [random.randint(0, 1) for _ in range(self.cell_width)] for _ in range(self.cell_height)
             ]
         else:
-            grid = [
-                [0 for _ in range(self.cell_width)]
-                for _ in range(self.cell_height)
-            ]
+            grid = [[0 for _ in range(self.cell_width)] for _ in range(self.cell_height)]
         return grid
 
     def get_neighbours(self, cell: Tuple[int, int]) -> List[int]:
@@ -137,17 +125,13 @@ class GameOfLife:
                     continue
                 neighbor_row = row + i
                 neighbor_col = col + j
-                if (0 <= neighbor_row < self.cell_height and
-                        0 <= neighbor_col < self.cell_width):
+                if 0 <= neighbor_row < self.cell_height and 0 <= neighbor_col < self.cell_width:
                     neighbours.append(self.grid[neighbor_row][neighbor_col])
         return neighbours
 
     def get_next_generation(self) -> List[List[int]]:
         """Calculate and return the next generation grid."""
-        new_grid: List[List[int]] = [
-            [0 for _ in range(self.cell_width)]
-            for _ in range(self.cell_height)
-        ]
+        new_grid: List[List[int]] = [[0 for _ in range(self.cell_width)] for _ in range(self.cell_height)]
         for y in range(self.cell_height):
             for x in range(self.cell_width):
                 current_cell = self.grid[y][x]
@@ -207,14 +191,8 @@ class GameOfLife:
 
         life_game = GameOfLife(width=cols * 10, height=rows * 10, cell_size=10)
 
-        life_game.grid = [
-            [0 for _ in range(life_game.cell_width)]
-            for _ in range(life_game.cell_height)
-        ]
-        life_game.curr_generation = [
-            [0 for _ in range(life_game.cell_width)]
-            for _ in range(life_game.cell_height)
-        ]
+        life_game.grid = [[0 for _ in range(life_game.cell_width)] for _ in range(life_game.cell_height)]
+        life_game.curr_generation = [[0 for _ in range(life_game.cell_width)] for _ in range(life_game.cell_height)]
 
         for i in range(min(rows, life_game.cell_height)):
             for j in range(min(cols, life_game.cell_width)):
@@ -226,11 +204,7 @@ class GameOfLife:
 
     def save(self, filename: pathlib.Path) -> None:
         """Save the current generation to a file."""
-        grid_to_save = (
-            self.curr_generation
-            if self.curr_generation is not None
-            else self.grid
-        )
+        grid_to_save = self.curr_generation if self.curr_generation is not None else self.grid
         with open(filename, "w", encoding="utf-8") as file:
             for row in grid_to_save:
                 line = "".join("1" if cell == 1 else "0" for cell in row)

@@ -2,9 +2,9 @@
 Graphical User Interface for Conway's Game of Life.
 """
 
-# pylint: disable=no-member, too-many-statements
 from typing import Optional
 
+# pylint: disable=no-member, too-many-statements
 import pygame
 
 from life import GameOfLife

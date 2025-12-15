@@ -4,7 +4,9 @@ Graphical User Interface for Conway's Game of Life.
 
 # pylint: disable=no-member, too-many-statements
 from typing import Optional
+
 import pygame
+
 from life import GameOfLife
 from ui import UI
 
@@ -35,13 +37,9 @@ class GUI(UI):
         if self.screen is None:
             return
         for x in range(0, self.width, self.cell_size):
-            pygame.draw.line(
-                self.screen, pygame.Color("black"), (x, 0), (x, self.height)
-            )
+            pygame.draw.line(self.screen, pygame.Color("black"), (x, 0), (x, self.height))
         for y in range(0, self.height, self.cell_size):
-            pygame.draw.line(
-                self.screen, pygame.Color("black"), (0, y), (self.width, y)
-            )
+            pygame.draw.line(self.screen, pygame.Color("black"), (0, y), (self.width, y))
 
     def draw_grid(self) -> None:
         """Draw cells on the screen."""
@@ -75,8 +73,7 @@ class GUI(UI):
 
         return paused, running
 
-    def _handle_keyboard(self, event: pygame.event.Event,
-                         paused: bool, running: bool) -> tuple[bool, bool]:
+    def _handle_keyboard(self, event: pygame.event.Event, paused: bool, running: bool) -> tuple[bool, bool]:
         """Handle keyboard events."""
         key = event.key
 
@@ -105,8 +102,7 @@ class GUI(UI):
         cell_x = x // self.cell_size
         cell_y = y // self.cell_size
 
-        if (0 <= cell_x < self.life.cell_width and
-                0 <= cell_y < self.life.cell_height):
+        if 0 <= cell_x < self.life.cell_width and 0 <= cell_y < self.life.cell_height:
             if self.life.curr_generation[cell_y][cell_x] == 1:
                 self.life.curr_generation[cell_y][cell_x] = 0
             else:
@@ -120,11 +116,7 @@ class GUI(UI):
         self.life.step()
 
         font = pygame.font.SysFont(None, 24)
-        gen_text = font.render(
-            f"Поколение: {self.life.generations}",
-            True,
-            pygame.Color("blue")
-        )
+        gen_text = font.render(f"Поколение: {self.life.generations}", True, pygame.Color("blue"))
         self.screen.blit(gen_text, (10, 10))
 
         if not self.life.is_changing:
@@ -132,10 +124,7 @@ class GUI(UI):
             paused = True
 
         if self.life.is_max_generations_exceeded:
-            print(
-                f"Достигнуто максимальное число поколений: "
-                f"{self.life.max_generations}"
-            )
+            print(f"Достигнуто максимальное число поколений: " f"{self.life.max_generations}")
             paused = True
 
         return paused
@@ -146,11 +135,7 @@ class GUI(UI):
             return
 
         font = pygame.font.SysFont(None, 24)
-        text = font.render(
-            "ПАУЗА (ПРОБЕЛ: продолжить, R: рестарт, C: очистить, ESC: выход)",
-            True,
-            pygame.Color("red")
-        )
+        text = font.render("ПАУЗА (ПРОБЕЛ: продолжить, R: рестарт, C: очистить, ESC: выход)", True, pygame.Color("red"))
         self.screen.blit(text, (10, 10))
 
     def run(self) -> None:
@@ -187,13 +172,7 @@ class GUI(UI):
 
 
 if __name__ == "__main__":
-    game = GameOfLife(
-        width=640,
-        height=480,
-        cell_size=10,
-        speed=10,
-        max_generations=100
-    )
+    game = GameOfLife(width=640, height=480, cell_size=10, speed=10, max_generations=100)
 
     gui = GUI(life=game, cell_size=10, speed=10)
 

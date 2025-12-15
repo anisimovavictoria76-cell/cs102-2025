@@ -132,6 +132,8 @@ class GameOfLife:
         ----------
         Cells
             List of neighboring cell values.
+        out : Cells
+            Список соседних клеток, в котором каждая позиция – 0 или 1.
         """
         row, col = cell
         neighbours = []
